@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة المطورين | فتح (Fath)</title>
+  <link rel="stylesheet" href="/static/css/fath-design.css">
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body class="lang-ar">
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner">
+    <span class="icon-svg" style="width:14px; height:14px; margin-left:6px; vertical-align:-2px;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </span>
+    <strong>إخلاء مسؤولية تنظيمي:</strong> فتح (Fath) بيئة اختبار تعليمية ومستقلة تحاكي معايير ساما. جميع البيانات وحركات الحسابات افتراضية.
+  </div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <a href="/" class="brand-wrapper">
+      <div class="brand-icon">فـ</div>
+      <div>
+        <span class="brand-name">فتح | Fath</span>
+        <span class="brand-badge">بوابة المطورين</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/" class="nav-link">الرئيسية</a>
+      <a href="/portal" class="nav-link active">لوحة المطورين</a>
+      <a href="/explorer" class="nav-link">مستكشف الواجهات API</a>
+      <a href="/portal?lang=en" class="btn-lang">
+        <span>English</span>
+        <span class="icon-svg" style="width:13px; height:13px; margin-right:4px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Header Section -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 700; margin-bottom: 4px;">لوحة تحكم بيئة الاختبار (Sandbox Portal)</h1>
+        <p style="color: var(--text-secondary); font-size: 0.92rem;">مراقبة التفويضات النشطة، سجل التدقيق التنظيمي، والبث الحي للعمليات المصرفية.</p>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <a href="/explorer" class="btn btn-primary">
+          <span class="icon-svg" style="width:14px; height:14px; margin-left:4px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </span>
+          <span>تجربة الواجهات (API Explorer)</span>
+        </a>
+        <form method="POST" action="/portal/seed" style="display:inline;">
+          <button type="submit" class="btn btn-secondary">
+            <span class="icon-svg" style="width:14px; height:14px; margin-left:4px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </span>
+            <span>إعادة ضبط البيانات</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="grid-3" style="margin-bottom: 32px;">
+      <div class="card" style="padding: 20px;">
+        <div style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">العملاء الافتراضيون</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--fath-green);">{{ total_users }}</div>
+        <div style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px;">4 أنماط مالية وسلوكية متكاملة</div>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <div style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">الحسابات المصرفية (ASPSPs)</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--apple-blue);">{{ total_accounts }}</div>
+        <div style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px;">موزعة على 3 بنوك سعودية افتراضية</div>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <div style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">حركات دفتر الأستاذ (8 أشهر)</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--apple-purple);">{{ total_transactions }}</div>
+        <div style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px;">معاملات واقعية مع تجار سعوديين</div>
+      </div>
+    </div>
+
+    <!-- Active Consents Section -->
+    <div class="card" style="margin-bottom: 32px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="icon-svg" style="width:18px; height:18px; color: var(--apple-blue);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">موافقات التفويض النشطة (Active Consents)</h3>
+        </div>
+        <span class="status-pill info"><span class="status-dot"></span> {{ consents|length }} تفويضات مسجلة</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>المعرف</th>
+              <th>العميل المصرح</th>
+              <th>تطبيق الطرف الثالث</th>
+              <th>الصلاحيات الممنوحة</th>
+              <th>تاريخ الانتهاء</th>
+              <th>الحالة</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in consents %}
+            <tr>
+              <td>#{{ c.id }}</td>
+              <td><strong>{{ c.full_name_ar }}</strong></td>
+              <td>{{ c.client_id }}</td>
+              <td>
+                {% for scope in c.scopes.split() %}
+                  <span class="code-badge get" style="font-size: 0.72rem; margin: 1px;">{{ scope }}</span>
+                {% endfor %}
+              </td>
+              <td style="font-size: 0.82rem; font-family: var(--font-mono);">
+                {{ c.token_expires_at[:19] if c.token_expires_at else '-' }}
+              </td>
+              <td>
+                {% if c.revoked_at %}
+                  <span class="status-pill danger">ملغي Revoked</span>
+                {% elif c.access_token %}
+                  <span class="status-pill success">نشط Active</span>
+                {% else %}
+                  <span class="status-pill warning">معلق Pending</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if not c.revoked_at and c.access_token %}
+                <form method="POST" action="/portal/revoke" style="display:inline;">
+                  <input type="hidden" name="token" value="{{ c.access_token }}">
+                  <button type="submit" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem; color: var(--apple-rose);">إلغاء الصلاحية</button>
+                </form>
+                {% else %}
+                  <span style="color: var(--text-tertiary); font-size: 0.8rem;">-</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-tertiary); padding: 24px;">
+                لا توجد تفويضات نشطة حالياً. يمكنك إنشاء تفويض جديد عبر تجربة الـ API Explorer.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Live WebSocket Stream & Audit Logs Grid -->
+    <div class="grid-2">
+      <!-- Live WebSockets Stream -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="icon-svg" style="width:18px; height:18px; color: var(--apple-amber);">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </span>
+            <h3 style="font-size: 1.15rem; font-weight: 700;">البث المباشر للأحداث (WebSocket Feed)</h3>
+          </div>
+          <span id="ws-status" class="status-pill warning"><span class="status-dot"></span> جاري الاتصال...</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 12px;">
+          يتم بث المعاملات اللحظية والتغيرات في الأرصدة وحالات الدفع فور وقوعها (محاكاة آلية كل 45 ثانية).
+        </p>
+        <div id="live-feed" class="feed-stream">
+          <div class="feed-item">
+            <div>
+              <div style="font-weight: 600; font-size: 0.85rem;">جاهز لاستقبال الأحداث</div>
+              <div style="color: var(--text-secondary); font-size: 0.75rem;">اتصال SocketIO متصل بالغرفة المفتوحة</div>
+            </div>
+            <span class="code-badge get">READY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Logs Trail -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="icon-svg" style="width:18px; height:18px; color: var(--fath-green);">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+            </span>
+            <h3 style="font-size: 1.15rem; font-weight: 700;">سجل التدقيق الرقابي (Audit Trail)</h3>
+          </div>
+          <span class="status-pill info">آخر الأحداث</span>
+        </div>
+        <div class="table-wrapper" style="max-height: 420px; overflow-y: auto;">
+          <table class="styled-table" style="font-size: 0.8rem;">
+            <thead>
+              <tr>
+                <th>الحدث</th>
+                <th>المستخدم</th>
+                <th>التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in audit_logs %}
+              <tr>
+                <td>
+                  <span class="code-badge post" style="font-size: 0.72rem;">{{ a.event_type }}</span>
+                  <div style="color: var(--text-secondary); font-size: 0.72rem; margin-top: 2px;">{{ a.details[:45] }}...</div>
+                </td>
+                <td>{{ a.user_id or 'System' }}</td>
+                <td style="font-family: var(--font-mono); font-size: 0.72rem;">{{ a.created_at[11:19] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>فتح (Fath) | بيئة اختبار البنك المفتوح للمطورين | متوافق مع إطار عمل ساما v1.0</p>
+  </footer>
+
+  <script>
+    // Realtime WebSocket Connection
+    try {
+      const socket = io({ transports: ['websocket', 'polling'] });
+      const statusEl = document.getElementById('ws-status');
+      const feedEl = document.getElementById('live-feed');
+
+      socket.on('connect', () => {
+        statusEl.className = 'status-pill success';
+        statusEl.innerHTML = '<span class="status-dot"></span> متصل بالبث الحي';
+      });
+
+      socket.on('disconnect', () => {
+        statusEl.className = 'status-pill danger';
+        statusEl.innerHTML = '<span class="status-dot"></span> غير متصل';
+      });
+
+      function addFeedItem(title, subtitle, badgeType) {
+        const item = document.createElement('div');
+        item.className = 'feed-item';
+        item.innerHTML = `
+          <div>
+            <div style="font-weight: 600; font-size: 0.85rem;">${title}</div>
+            <div style="color: var(--text-secondary); font-size: 0.75rem;">${subtitle}</div>
+          </div>
+          <span class="code-badge ${badgeType}">${badgeType.toUpperCase()}</span>
+        `;
+        feedEl.insertBefore(item, feedEl.firstChild);
+      }
+
+      socket.on('new_transaction', (data) => {
+        addFeedItem(
+          `عملية جديدة: ${data.amount} ريال (${data.merchant?.ar || 'تاجر افتراضي'})`,
+          `رقم المرجع: ${data.referenceNumber} | التصنيف: ${data.category}`,
+          'post'
+        );
+      });
+
+      socket.on('balance_update', (data) => {
+        addFeedItem(
+          `تحديث رصيد الحساب #${data.accountId}`,
+          `الرصيد المتاح الجديد: ${data.newBalance} ريال`,
+          'get'
+        );
+      });
+
+      socket.on('payment_status_change', (data) => {
+        addFeedItem(
+          `حالة أمر الدفع #${data.paymentId}: ${data.status}`,
+          `المبلغ: ${data.amount} ريال إلى ${data.toIban}`,
+          'get'
+        );
+      });
+
+      socket.on('consent_revoked', (data) => {
+        addFeedItem('تم إلغاء التفويض فورياً', data.reason, 'post');
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+services:
+  fath-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fath-sandbox
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - FATH_SECRET_KEY=production-sandbox-secret-key-32chars
+      - FATH_TOKEN_TTL=3600
+      - FATH_DB_PATH=/app/data_volume/fath.db
+      - PORT=5000
+      - HOST=0.0.0.0
+    volumes:
+      - fath-data:/app/data_volume
+
+volumes:
+  fath-data:
+    name: fath-data

@@ -1,0 +1,439 @@
+openapi: 3.0.3
+info:
+  title: Fath (فتح) | Saudi Open Banking Sandbox API
+  description: |
+    Saudi Open Banking Sandbox for Developers | بيئة اختبار البنك المفتوح للمطورين
+
+    **⚠️ Regulatory Disclaimer:**
+    Fath is an independent portfolio project for educational purposes. It is not affiliated with, endorsed by, or certified by SAMA (Saudi Central Bank). All bank names and financial data are fictional and generated for testing purposes only.
+
+    Reference standard: SAMA Open Banking Framework Technical Standards v1.0
+  version: 1.0.0
+  contact:
+    name: Yamen Alwaily
+    url: https://github.com/yamen-alwaily/fath
+servers:
+  - url: http://localhost:5000
+    description: Local Sandbox Development Server
+
+paths:
+  /oauth/token:
+    post:
+      summary: OAuth 2.0 Token Exchange with PKCE
+      description: Exchange an authorization code + PKCE code_verifier for a Bearer access token.
+      tags:
+        - Security & OAuth 2.0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - grant_type
+                - client_id
+                - code
+              properties:
+                grant_type:
+                  type: string
+                  example: authorization_code
+                client_id:
+                  type: string
+                  example: sandbox_client_demo
+                code:
+                  type: string
+                  example: auth_code_12345
+                code_verifier:
+                  type: string
+                  example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      responses:
+        '200':
+          description: Token successfully issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid authorization code or PKCE verification failure
+
+  /oauth/revoke:
+    post:
+      summary: Revoke Token / Consent Grant
+      description: Revoke an active access token or consent grant.
+      tags:
+        - Security & OAuth 2.0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Revocation status
+
+  /oauth/introspect:
+    get:
+      summary: Introspect Token (RFC 7662)
+      tags:
+        - Security & OAuth 2.0
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Active status and scope claims of the token
+
+  /open-banking/v1/accounts:
+    get:
+      summary: List Authorized Accounts (AIS)
+      description: Retrieve all bank accounts belonging to the consented customer across simulated ASPSPs.
+      tags:
+        - Account Information (AIS)
+      security:
+        - BearerAuth: [accounts:read]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 25
+      responses:
+        '200':
+          description: Successful account list retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+        '401':
+          description: Missing or expired token
+        '403':
+          description: Insufficient scope (requires accounts:read)
+
+  /open-banking/v1/accounts/{accountId}:
+    get:
+      summary: Get Account Details (AIS)
+      tags:
+        - Account Information (AIS)
+      security:
+        - BearerAuth: [accounts:read]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Account details
+        '404':
+          description: Account not found or unauthorized for this user
+
+  /open-banking/v1/accounts/{accountId}/balances:
+    get:
+      summary: Get Account Balances (AIS)
+      description: Retrieve live available and booked balances.
+      tags:
+        - Account Information (AIS)
+      security:
+        - BearerAuth: [balances:read]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Balances retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Balance'
+
+  /open-banking/v1/accounts/{accountId}/transactions:
+    get:
+      summary: Get Transaction Ledger (AIS)
+      description: Retrieve historical transactions with date filters and pagination.
+      tags:
+        - Account Information (AIS)
+      security:
+        - BearerAuth: [transactions:read]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: fromBookingDateTime
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: toBookingDateTime
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Transactions retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+
+  /open-banking/v1/payments:
+    post:
+      summary: Initiate Payment Order (PIS)
+      description: Submit an immediate payment order. Deducts balance atomically upon completion.
+      tags:
+        - Payment Initiation (PIS)
+      security:
+        - BearerAuth: [payments:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fromAccountId
+                - toIban
+                - amount
+              properties:
+                fromAccountId:
+                  type: integer
+                  example: 1
+                toIban:
+                  type: string
+                  example: SA7210000000000000001001
+                amount:
+                  type: number
+                  format: float
+                  example: 250.00
+                currency:
+                  type: string
+                  default: SAR
+                  example: SAR
+                reference:
+                  type: string
+                  example: Invoice 2026-A
+      responses:
+        '201':
+          description: Payment initiated and completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        '422':
+          description: Payment rejected (e.g. Insufficient funds)
+
+  /open-banking/v1/payments/{paymentId}:
+    get:
+      summary: Get Payment Status (PIS)
+      tags:
+        - Payment Initiation (PIS)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Current payment status
+
+  /health:
+    get:
+      summary: Service Health Check
+      tags:
+        - System
+      responses:
+        '200':
+          description: Sandbox status
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Bearer Token
+
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          example: 3600
+        scope:
+          type: string
+          example: accounts:read balances:read transactions:read
+
+    Account:
+      type: object
+      properties:
+        accountId:
+          type: integer
+        bankName:
+          type: object
+          properties:
+            ar: { type: string }
+            en: { type: string }
+        iban:
+          type: string
+          example: SA7210000000000000001001
+        accountType:
+          type: string
+          enum: [checking, savings, investment, credit]
+        currency:
+          type: string
+          example: SAR
+        status:
+          type: string
+          example: Enabled
+
+    Balance:
+      type: object
+      properties:
+        accountId:
+          type: integer
+        iban:
+          type: string
+        currency:
+          type: string
+          example: SAR
+        amount:
+          type: number
+          format: float
+        balanceType:
+          type: string
+          enum: [InterimAvailable, InterimBooked]
+        creditDebitIndicator:
+          type: string
+          enum: [Credit, Debit]
+
+    Transaction:
+      type: object
+      properties:
+        transactionId:
+          type: integer
+        accountId:
+          type: integer
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+          example: SAR
+        creditDebitIndicator:
+          type: string
+          enum: [Credit, Debit]
+        status:
+          type: string
+          example: Booked
+        bookingDateTime:
+          type: string
+          format: date
+        description:
+          type: object
+          properties:
+            ar: { type: string }
+            en: { type: string }
+        merchant:
+          type: object
+          properties:
+            ar: { type: string }
+            en: { type: string }
+        category:
+          type: string
+        referenceNumber:
+          type: string
+
+    Payment:
+      type: object
+      properties:
+        paymentId:
+          type: integer
+        fromAccountId:
+          type: integer
+        toIban:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        reference:
+          type: string
+        status:
+          type: string
+          enum: [Pending, Processing, Completed, Rejected]
+        rejectionReason:
+          type: string
+        initiatedAt:
+          type: string
+        completedAt:
+          type: string
+
+    MetaPagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        disclaimer:
+          type: string

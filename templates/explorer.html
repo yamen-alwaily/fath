@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Explorer | Fath (فتح) Open Banking</title>
+  <link rel="stylesheet" href="/static/css/fath-design.css">
+  <style>
+    .explorer-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .endpoint-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 0.86rem;
+      margin-bottom: 6px;
+      background: white;
+      transition: all var(--transition-fast);
+    }
+    .endpoint-item:hover, .endpoint-item.active {
+      border-color: var(--apple-blue);
+      background: rgba(0, 113, 227, 0.04);
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: white;
+    }
+    .json-editor {
+      width: 100%;
+      height: 140px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: #1e1e24;
+      color: #f8f8f2;
+      resize: vertical;
+    }
+    @media (max-width: 900px) {
+      .explorer-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner">
+    <span class="icon-svg" style="width:14px; height:14px; margin-right:6px; vertical-align:-2px;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </span>
+    <strong>Regulatory Disclaimer:</strong> Fath is an independent portfolio project for educational purposes. It is not affiliated with, endorsed by, or certified by SAMA (Saudi Central Bank).
+  </div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <a href="/?lang=en" class="brand-wrapper">
+      <div class="brand-icon">F</div>
+      <div>
+        <span class="brand-name">Fath | فتح</span>
+        <span class="brand-badge">API Explorer</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/portal?lang=en" class="nav-link">Developer Portal</a>
+      <a href="/explorer?lang=en" class="nav-link active">Explorer</a>
+      <a href="/openapi.yaml" target="_blank" class="nav-link">OpenAPI Spec</a>
+      <a href="/" class="btn-lang">Home</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 1.85rem; font-weight: 700; margin-bottom: 6px;">Open Banking API Explorer</h1>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Test AIS and PIS endpoints directly in your browser against the synthetic Saudi banking ledger.
+      </p>
+    </div>
+
+    <!-- Quick Token Minting Helper Card -->
+    <div class="card" style="margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, rgba(0,122,61,0.04) 0%, rgba(0,113,227,0.03) 100%);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="icon-svg" style="width:16px; height:16px; color: var(--fath-green);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </span>
+            <strong style="font-size: 0.95rem;">Instant Sandbox Token Mint</strong>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.84rem; margin-top: 2px;">
+            Generate an authorized Bearer token for any customer archetype without manually completing the OAuth consent handshake:
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="user-select-mint" class="input-field" style="width: auto; min-width: 220px; font-size: 0.85rem;">
+            {% for u in users %}
+              <option value="{{ u.id }}">{{ u.full_name_en }} ({{ u.archetype }})</option>
+            {% endfor %}
+          </select>
+          <button type="button" id="btn-mint" class="btn btn-primary" style="padding: 9px 18px; font-size: 0.85rem;">Mint Token</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="explorer-layout">
+      <!-- Endpoint Sidebar -->
+      <div class="card" style="padding: 16px;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px;">
+          Available Endpoints
+        </h3>
+
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--fath-green); margin: 8px 4px 6px;">ACCOUNT INFORMATION (AIS)</div>
+        <div class="endpoint-item active" data-method="GET" data-url="/open-banking/v1/accounts">
+          <span class="code-badge get">GET</span>
+          <span>List Accounts</span>
+        </div>
+        <div class="endpoint-item" data-method="GET" data-url="/open-banking/v1/accounts/1">
+          <span class="code-badge get">GET</span>
+          <span>Account Detail</span>
+        </div>
+        <div class="endpoint-item" data-method="GET" data-url="/open-banking/v1/accounts/1/balances">
+          <span class="code-badge get">GET</span>
+          <span>Get Balances</span>
+        </div>
+        <div class="endpoint-item" data-method="GET" data-url="/open-banking/v1/accounts/1/transactions">
+          <span class="code-badge get">GET</span>
+          <span>Get Transactions</span>
+        </div>
+
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--apple-blue); margin: 16px 4px 6px;">PAYMENT INITIATION (PIS)</div>
+        <div class="endpoint-item" data-method="POST" data-url="/open-banking/v1/payments" data-body='{"fromAccountId": 1, "toIban": "SA7210000000000000001001", "amount": 150.0, "currency": "SAR", "reference": "Bill Payment"}'>
+          <span class="code-badge post">POST</span>
+          <span>Initiate Payment</span>
+        </div>
+        <div class="endpoint-item" data-method="GET" data-url="/open-banking/v1/payments/1">
+          <span class="code-badge get">GET</span>
+          <span>Payment Status</span>
+        </div>
+
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--apple-purple); margin: 16px 4px 6px;">OAUTH 2.0 / SECURITY</div>
+        <div class="endpoint-item" data-method="GET" data-url="/oauth/introspect">
+          <span class="code-badge get">GET</span>
+          <span>Introspect Token</span>
+        </div>
+      </div>
+
+      <!-- Execution Panel -->
+      <div class="card">
+        <form id="api-form">
+          <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <select id="req-method" class="input-field" style="width: 110px; font-weight: 700;">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+            </select>
+            <input type="text" id="req-url" class="input-field" value="/open-banking/v1/accounts" required style="font-family: var(--font-mono);">
+            <button type="submit" id="btn-send" class="btn btn-primary" style="padding: 10px 24px;">Send</button>
+          </div>
+
+          <!-- Auth Header -->
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">
+              Authorization Header (Bearer Token):
+            </label>
+            <input type="text" id="req-token" class="input-field" placeholder="Bearer fath_at_..." style="font-family: var(--font-mono); font-size: 0.85rem;">
+          </div>
+
+          <!-- Body Section (for POST) -->
+          <div id="body-container" style="display: none; margin-bottom: 16px;">
+            <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">
+              Request Body (JSON):
+            </label>
+            <textarea id="req-body" class="json-editor"></textarea>
+          </div>
+        </form>
+
+        <hr style="border: none; border-top: 1px solid var(--divider); margin: 20px 0;">
+
+        <!-- Response Console -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-weight: 700; font-size: 0.95rem;">Response Output:</span>
+            <div id="res-meta" style="font-size: 0.82rem; color: var(--text-secondary);">
+              Status: <span id="res-status" class="status-pill info">Waiting</span>
+            </div>
+          </div>
+          <pre id="res-output" class="code-block" style="min-height: 200px;">Click "Send" or Mint a Token above to inspect real-time JSON responses.</pre>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const methodSelect = document.getElementById('req-method');
+    const urlInput = document.getElementById('req-url');
+    const tokenInput = document.getElementById('req-token');
+    const bodyContainer = document.getElementById('body-container');
+    const bodyInput = document.getElementById('req-body');
+    const form = document.getElementById('api-form');
+    const outputEl = document.getElementById('res-output');
+    const statusEl = document.getElementById('res-status');
+
+    // Sidebar endpoint switching
+    document.querySelectorAll('.endpoint-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.endpoint-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const method = item.getAttribute('data-method');
+        const url = item.getAttribute('data-url');
+        const defaultBody = item.getAttribute('data-body');
+
+        methodSelect.value = method;
+        urlInput.value = url;
+
+        if (method === 'POST') {
+          bodyContainer.style.display = 'block';
+          bodyInput.value = defaultBody ? JSON.stringify(JSON.parse(defaultBody), null, 2) : '{}';
+        } else {
+          bodyContainer.style.display = 'none';
+        }
+      });
+    });
+
+    methodSelect.addEventListener('change', () => {
+      bodyContainer.style.display = methodSelect.value === 'POST' ? 'block' : 'none';
+    });
+
+    // Instant Token Mint
+    document.getElementById('btn-mint').addEventListener('click', async () => {
+      const userId = document.getElementById('user-select-mint').value;
+      try {
+        const res = await fetch('/portal/mint-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const data = await res.json();
+        if (data.access_token) {
+          tokenInput.value = `Bearer ${data.access_token}`;
+          outputEl.textContent = JSON.stringify(data, null, 2);
+          statusEl.className = 'status-pill success';
+          statusEl.textContent = 'Token Minted 200 OK';
+        }
+      } catch (err) {
+        alert('Failed to mint token: ' + err.message);
+      }
+    });
+
+    // Execute Request
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const method = methodSelect.value;
+      const url = urlInput.value;
+      const headers = { 'Content-Type': 'application/json' };
+
+      if (tokenInput.value.trim()) {
+        headers['Authorization'] = tokenInput.value.trim();
+      }
+
+      const options = { method, headers };
+      if (method === 'POST') {
+        try {
+          options.body = JSON.stringify(JSON.parse(bodyInput.value));
+        } catch {
+          alert('Invalid JSON in Request Body');
+          return;
+        }
+      }
+
+      statusEl.className = 'status-pill warning';
+      statusEl.textContent = 'Sending...';
+
+      try {
+        const startTime = performance.now();
+        const res = await fetch(url, options);
+        const duration = Math.round(performance.now() - startTime);
+        const json = await res.json();
+
+        statusEl.className = res.ok ? 'status-pill success' : 'status-pill danger';
+        statusEl.textContent = `${res.status} ${res.statusText} (${duration}ms)`;
+        outputEl.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        statusEl.className = 'status-pill danger';
+        statusEl.textContent = 'Error';
+        outputEl.textContent = 'Request error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
