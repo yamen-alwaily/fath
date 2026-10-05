@@ -410,12 +410,42 @@ def authorize():
             return redirect(redirect_url)
 
         # For GET or initial display, return JSON metadata or template parameters
-        mock_users = conn.execute("SELECT id, username, full_name_ar, full_name_en, archetype FROM mock_users").fetchall()
-        return jsonify({
-            "client_name": client["client_name"],
-            "client_id": client_id,
-            "redirect_uri": redirect_uri or client["redirect_uri"],
-            "requested_scopes": [
+        mock_users = conn.execute("SELECT id, username, full_name_ar, full_name_en, national_id, archetype FROM mock_users").fetchall()
+        
+        # Check if caller wants JSON API output
+        wants_json = (
+            request.is_json
+            or request.args.get("format") == "json"
+            or ("application/json" in request.headers.get("Accept", "") and "text/html" not in request.headers.get("Accept", ""))
+        )
+        if wants_json:
+            return jsonify({
+                "client_name": client["client_name"],
+                "client_id": client_id,
+                "redirect_uri": redirect_uri or client["redirect_uri"],
+                "requested_scopes": [
+                    {
+                        "scope": s,
+                        "desc_ar": VALID_SCOPES[s]["ar"],
+                        "desc_en": VALID_SCOPES[s]["en"],
+                    }
+                    for s in requested_scopes
+                ],
+                "code_challenge": code_challenge,
+                "code_challenge_method": code_challenge_method,
+                "state": state,
+                "available_users": [dict(u) for u in mock_users],
+            }), 200
+
+        # Otherwise render interactive consent screen UI
+        lang = request.args.get("lang") or session.get("lang", "en")
+        template = "consent.html" if lang == "ar" else "consent_en.html"
+        return render_template(
+            template,
+            client_name=client["client_name"],
+            client_id=client_id,
+            redirect_uri=redirect_uri or client["redirect_uri"],
+            requested_scopes=[
                 {
                     "scope": s,
                     "desc_ar": VALID_SCOPES[s]["ar"],
@@ -423,11 +453,11 @@ def authorize():
                 }
                 for s in requested_scopes
             ],
-            "code_challenge": code_challenge,
-            "code_challenge_method": code_challenge_method,
-            "state": state,
-            "available_users": [dict(u) for u in mock_users],
-        }), 200
+            code_challenge=code_challenge,
+            code_challenge_method=code_challenge_method,
+            state=state,
+            available_users=[dict(u) for u in mock_users],
+        )
 
 
 @oauth_bp.route("/token", methods=["POST"])

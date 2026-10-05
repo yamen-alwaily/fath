@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="/static/css/fath-design.css">
   <style>
     .consent-card {
-      max-width: 640px;
-      margin: 40px auto;
+      max-width: 620px;
+      margin: 18px auto 30px auto;
       background: white;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
@@ -17,18 +17,18 @@
     }
     .consent-header {
       background: linear-gradient(135deg, rgba(0,122,61,0.06) 0%, rgba(0,113,227,0.04) 100%);
-      padding: 32px;
+      padding: 22px 24px;
       border-bottom: 1px solid var(--divider);
       text-align: center;
     }
     .scope-item {
       display: flex;
       align-items: flex-start;
-      gap: 14px;
-      padding: 16px;
+      gap: 12px;
+      padding: 10px 14px;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       background: #fafafc;
       transition: all var(--transition-fast);
     }
@@ -37,20 +37,20 @@
       border-color: rgba(0, 122, 61, 0.3);
     }
     .scope-checkbox {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       accent-color: var(--fath-green);
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .user-select-box {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 0.95rem;
+      padding: 10px 14px;
+      font-size: 0.9rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
       background: white;
       font-family: inherit;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
   </style>
 </head>
@@ -73,7 +73,7 @@
         </p>
       </div>
 
-      <div style="padding: 32px;">
+      <div style="padding: 22px 24px;">
         <form id="consent-form" method="POST" action="/oauth/authorize">
           <input type="hidden" name="client_id" value="{{ client_id }}">
           <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
@@ -122,7 +122,7 @@
           </div>
 
           <!-- Consent Terms -->
-          <div style="background: var(--bg-inset); padding: 14px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-secondary); margin: 24px 0; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px;">
+          <div style="background: var(--bg-inset); padding: 12px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-secondary); margin: 16px 0; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px;">
             <span class="icon-svg" style="width:16px; height:16px; color: var(--fath-green); margin-top: 2px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </span>

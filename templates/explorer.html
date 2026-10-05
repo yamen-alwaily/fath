@@ -297,6 +297,16 @@
         outputEl.textContent = 'Request error: ' + err.message;
       }
     });
+
+    if (new URLSearchParams(window.location.search).get('demo') === '1') {
+      const mintBtn = document.getElementById('btn-mint');
+      if (mintBtn) {
+        mintBtn.click();
+        setTimeout(() => {
+          form.dispatchEvent(new Event('submit'));
+        }, 300);
+      }
+    }
   </script>
 </body>
 </html>

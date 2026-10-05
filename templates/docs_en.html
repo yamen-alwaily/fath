@@ -9,17 +9,17 @@
   <style>
     /* Swagger UI Container Card & Overrides */
     .swagger-card {
-      background: white;
+      background: #141416;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-card);
-      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      padding: 28px 24px;
       margin-bottom: 48px;
     }
     .swagger-ui .topbar { display: none !important; }
     .swagger-ui {
       font-family: inherit !important;
-      color: var(--text-primary) !important;
+      color: #f4f4f5 !important;
     }
     .swagger-ui .wrapper {
       padding: 0 !important;
@@ -28,51 +28,92 @@
     .swagger-ui .info {
       margin: 8px 0 24px 0 !important;
     }
-    .swagger-ui .info .title {
+    .swagger-ui .info .title,
+    .swagger-ui .info h2,
+    .swagger-ui .info h2.title,
+    .swagger-ui .title {
       font-family: inherit !important;
       font-weight: 700 !important;
-      font-size: 1.65rem !important;
-      color: var(--text-primary) !important;
+      font-size: 1.7rem !important;
+      color: #ffffff !important;
       letter-spacing: -0.02em !important;
     }
+    .swagger-ui .info p,
+    .swagger-ui .info li,
+    .swagger-ui .info .renderedMarkdown {
+      color: #a1a1aa !important;
+    }
+    .swagger-ui .servers > label,
+    .swagger-ui .servers label,
+    .swagger-ui .servers-title {
+      color: #e4e4e7 !important;
+      font-weight: 600 !important;
+    }
+    .swagger-ui select {
+      background: #27272a !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: var(--radius-sm) !important;
+      padding: 6px 10px !important;
+    }
+    .swagger-ui input[type="text"] {
+      background: #27272a !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: var(--radius-sm) !important;
+      padding: 8px 12px !important;
+    }
     .swagger-ui .scheme-container {
-      background: var(--bg-inset) !important;
+      background: #1c1c1f !important;
       box-shadow: none !important;
       border-radius: var(--radius-md) !important;
       padding: 14px 18px !important;
       margin-bottom: 24px !important;
-      border: 1px solid var(--border-subtle) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .swagger-ui .opblock-tag {
+      font-family: inherit !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
     .swagger-ui .opblock {
       border-radius: var(--radius-md) !important;
       box-shadow: none !important;
-      border: 1px solid var(--border-subtle) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
       margin-bottom: 14px !important;
+      background: #1c1c1f !important;
+    }
+    .swagger-ui .opblock .opblock-summary-path {
+      color: #ffffff !important;
+    }
+    .swagger-ui .opblock .opblock-summary-description {
+      color: #a1a1aa !important;
     }
     .swagger-ui .opblock.opblock-get {
-      background: rgba(52, 199, 89, 0.04) !important;
-      border-color: rgba(52, 199, 89, 0.3) !important;
+      background: rgba(52, 199, 89, 0.08) !important;
+      border-color: rgba(52, 199, 89, 0.35) !important;
     }
     .swagger-ui .opblock.opblock-get .opblock-summary-method {
       background: #34c759 !important;
       border-radius: var(--radius-sm) !important;
     }
     .swagger-ui .opblock.opblock-post {
-      background: rgba(0, 113, 227, 0.04) !important;
-      border-color: rgba(0, 113, 227, 0.3) !important;
+      background: rgba(0, 113, 227, 0.08) !important;
+      border-color: rgba(0, 113, 227, 0.35) !important;
     }
     .swagger-ui .opblock.opblock-post .opblock-summary-method {
       background: #0071e3 !important;
       border-radius: var(--radius-sm) !important;
     }
     .swagger-ui .btn.authorize {
-      color: var(--fath-green) !important;
-      border-color: var(--fath-green) !important;
+      color: #34c759 !important;
+      border-color: #34c759 !important;
       border-radius: var(--radius-pill) !important;
       font-weight: 600 !important;
     }
-    .swagger-ui .btn.authorize svg { fill: var(--fath-green) !important; }
-    .swagger-ui .btn.authorize:hover { background: var(--fath-green-soft) !important; }
+    .swagger-ui .btn.authorize svg { fill: #34c759 !important; }
+    .swagger-ui .btn.authorize:hover { background: rgba(52, 199, 89, 0.15) !important; }
     .swagger-ui .btn.execute {
       background: var(--fath-green) !important;
       border-color: var(--fath-green) !important;
@@ -84,8 +125,12 @@
     .swagger-ui .btn.execute:hover { background: var(--fath-green-hover) !important; }
     .swagger-ui section.models {
       border-radius: var(--radius-md) !important;
-      border: 1px solid var(--border-subtle) !important;
-      background: #fafafc !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: #1c1c1f !important;
+    }
+    .swagger-ui section.models h4 {
+      color: #ffffff !important;
+      font-family: inherit !important;
     }
   </style>
 </head>
@@ -166,6 +211,15 @@
   <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
   <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
   <script>
+    // Prevent Swagger UI from injecting dark-mode class into html
+    document.documentElement.classList.remove('dark-mode');
+    const observer = new MutationObserver(() => {
+      if (document.documentElement.classList.contains('dark-mode')) {
+        document.documentElement.classList.remove('dark-mode');
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
     window.onload = function() {
       SwaggerUIBundle({
         url: "/openapi.yaml",
