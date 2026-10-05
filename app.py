@@ -196,6 +196,14 @@ def health():
     }), 200
 
 
+@app.route("/docs")
+def swagger_docs():
+    """Interactive Swagger UI documentation page for OpenAPI 3.0 specification."""
+    lang = _current_language()
+    template_name = "docs.html" if lang == "ar" else "docs_en.html"
+    return render_template(template_name)
+
+
 @app.route("/openapi.yaml")
 def openapi_spec():
     """Serve the OpenAPI 3.0 specification file."""

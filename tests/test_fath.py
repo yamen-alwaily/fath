@@ -363,3 +363,26 @@ def test_pis_insufficient_funds_rejection(test_client):
     with get_connection(db_path) as conn:
         acc_after = conn.execute("SELECT balance FROM mock_accounts WHERE id = ?", (acc_id,)).fetchone()
         assert float(acc_after["balance"]) == current_balance
+
+
+def test_swagger_docs_route(test_client):
+    """Verify /docs route renders Swagger UI with bilingual toggles and openapi.yaml link."""
+    client, _ = test_client
+
+    # Test default /docs (Arabic)
+    res_ar = client.get("/docs")
+    assert res_ar.status_code == 200
+    html_ar = res_ar.get_data(as_text=True)
+    assert "swagger-ui" in html_ar
+    assert "/openapi.yaml" in html_ar
+    assert "توثيق" in html_ar
+    assert "إخلاء مسؤولية تنظيمي" in html_ar
+
+    # Test English /docs?lang=en
+    res_en = client.get("/docs?lang=en")
+    assert res_en.status_code == 200
+    html_en = res_en.get_data(as_text=True)
+    assert "swagger-ui" in html_en
+    assert "/openapi.yaml" in html_en
+    assert "OpenAPI 3.0 Interactive Documentation" in html_en
+    assert "Regulatory Disclaimer" in html_en

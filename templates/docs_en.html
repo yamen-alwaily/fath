@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAPI Specification Docs | Fath (فتح)</title>
+  <link rel="stylesheet" href="/static/css/fath-design.css">
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>
+    /* Swagger UI Container Card & Overrides */
+    .swagger-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      margin-bottom: 48px;
+    }
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui {
+      font-family: inherit !important;
+      color: var(--text-primary) !important;
+    }
+    .swagger-ui .wrapper {
+      padding: 0 !important;
+      max-width: 100% !important;
+    }
+    .swagger-ui .info {
+      margin: 8px 0 24px 0 !important;
+    }
+    .swagger-ui .info .title {
+      font-family: inherit !important;
+      font-weight: 700 !important;
+      font-size: 1.65rem !important;
+      color: var(--text-primary) !important;
+      letter-spacing: -0.02em !important;
+    }
+    .swagger-ui .scheme-container {
+      background: var(--bg-inset) !important;
+      box-shadow: none !important;
+      border-radius: var(--radius-md) !important;
+      padding: 14px 18px !important;
+      margin-bottom: 24px !important;
+      border: 1px solid var(--border-subtle) !important;
+    }
+    .swagger-ui .opblock {
+      border-radius: var(--radius-md) !important;
+      box-shadow: none !important;
+      border: 1px solid var(--border-subtle) !important;
+      margin-bottom: 14px !important;
+    }
+    .swagger-ui .opblock.opblock-get {
+      background: rgba(52, 199, 89, 0.04) !important;
+      border-color: rgba(52, 199, 89, 0.3) !important;
+    }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method {
+      background: #34c759 !important;
+      border-radius: var(--radius-sm) !important;
+    }
+    .swagger-ui .opblock.opblock-post {
+      background: rgba(0, 113, 227, 0.04) !important;
+      border-color: rgba(0, 113, 227, 0.3) !important;
+    }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method {
+      background: #0071e3 !important;
+      border-radius: var(--radius-sm) !important;
+    }
+    .swagger-ui .btn.authorize {
+      color: var(--fath-green) !important;
+      border-color: var(--fath-green) !important;
+      border-radius: var(--radius-pill) !important;
+      font-weight: 600 !important;
+    }
+    .swagger-ui .btn.authorize svg { fill: var(--fath-green) !important; }
+    .swagger-ui .btn.authorize:hover { background: var(--fath-green-soft) !important; }
+    .swagger-ui .btn.execute {
+      background: var(--fath-green) !important;
+      border-color: var(--fath-green) !important;
+      color: white !important;
+      border-radius: var(--radius-pill) !important;
+      box-shadow: 0 2px 8px var(--fath-green-glow) !important;
+      font-weight: 600 !important;
+    }
+    .swagger-ui .btn.execute:hover { background: var(--fath-green-hover) !important; }
+    .swagger-ui section.models {
+      border-radius: var(--radius-md) !important;
+      border: 1px solid var(--border-subtle) !important;
+      background: #fafafc !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner">
+    <span class="icon-svg" style="width:14px; height:14px; margin-right:6px; vertical-align:-2px;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </span>
+    <strong>Regulatory Disclaimer:</strong> Fath is an independent portfolio project for educational purposes. It is not affiliated with, endorsed by, or certified by SAMA (Saudi Central Bank). All bank names and financial data are fictional and generated for testing purposes only.
+  </div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <a href="/?lang=en" class="brand-wrapper">
+      <div class="brand-icon">F</div>
+      <div>
+        <span class="brand-name">Fath | فتح</span>
+        <span class="brand-badge">Swagger Docs</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="/?lang=en" class="nav-link">Home</a>
+      <a href="/portal?lang=en" class="nav-link">Portal</a>
+      <a href="/explorer?lang=en" class="nav-link">API Explorer</a>
+      <a href="/docs?lang=en" class="nav-link active">Swagger UI</a>
+      <a href="/openapi.yaml" target="_blank" class="nav-link nav-link-secondary">Raw YAML</a>
+      <a href="/docs?lang=ar" class="btn-lang">
+        <span class="icon-svg" style="width:13px; height:13px; margin-right:4px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </span>
+        <span>العربية</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 700; margin-bottom: 6px;">OpenAPI 3.0 Interactive Documentation</h1>
+        <p style="color: var(--text-secondary); font-size: 0.92rem;">
+          Comprehensive interactive reference for SAMA Technical Standards v1.0 AIS, PIS, and OAuth 2.0 PKCE APIs.
+        </p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="/openapi.yaml" target="_blank" class="btn btn-secondary">
+          <span class="icon-svg" style="width:14px; height:14px; margin-right:4px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </span>
+          <span>Download YAML</span>
+        </a>
+        <a href="/explorer?lang=en" class="btn btn-primary">
+          <span class="icon-svg" style="width:14px; height:14px; margin-right:4px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </span>
+          <span>API Explorer</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Swagger UI Embed Container -->
+    <div class="swagger-card">
+      <div id="swagger-ui"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://github.com/yamen-alwaily/fath" target="_blank">GitHub Repo</a>
+      <a href="/portal?lang=en">Developer Portal</a>
+      <a href="/explorer?lang=en">API Explorer</a>
+      <a href="/docs?lang=en">Swagger UI</a>
+      <a href="/openapi.yaml">Raw YAML</a>
+    </div>
+    <p>Fath (فتح) | Saudi Open Banking Sandbox for Developers | SAMA Technical Standards v1.0</p>
+  </footer>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      SwaggerUIBundle({
+        url: "/openapi.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "StandaloneLayout",
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 1,
+        docExpansion: "list",
+        displayRequestDuration: true,
+        filter: true
+      });
+    };
+  </script>
+</body>
+</html>
